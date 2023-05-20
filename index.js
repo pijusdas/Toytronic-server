@@ -12,7 +12,7 @@ app.use(express.json())
 //
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zwideqp.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -29,7 +29,31 @@ async function run() {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
 
-        const toyCollection = client.db('toytronics').collection('toys')
+        const toyCollection = client.db('toytronics').collection('toys');
+
+
+
+
+
+        const indexKeys = { name: 1, category: 1 };
+        const indexOptions = { searchName: 'toy' }
+
+        const result = await toyCollection.createIndex(indexKeys, indexOptions);
+
+
+        app.get('/searchToy/:text', async (req, res) => {
+            const searchtext = req.params.text;
+            const result = await toyCollection.find({
+                $or: [
+                    { name: { $regex: searchtext, $options: "i" } },
+                    { category: { $regex: searchtext, $options: "i" } }
+                ]
+            }).toArray()
+
+            res.send(result)
+
+        })
+
 
         app.post('/allToys', async (req, res) => {
             const addedToy = req.body
@@ -51,6 +75,13 @@ async function run() {
             console.log(req.params.email)
             const result = await toyCollection.find({ sellerEmail: email }).toArray();
 
+            res.send(result)
+        })
+
+        app.get('/singleToy/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: new ObjectId(id) }
+            const result = await toyCollection.findOne(query);
             res.send(result)
         })
 
