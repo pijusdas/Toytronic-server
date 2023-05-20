@@ -31,12 +31,27 @@ async function run() {
 
         const toyCollection = client.db('toytronics').collection('toys')
 
-        app.post('/addToy', async(req,res)=>{
+        app.post('/allToys', async (req, res) => {
             const addedToy = req.body
             console.log(addedToy)
             const result = await toyCollection.insertOne(addedToy);
             res.send(result)
 
+        })
+
+        app.get('/allToys', async (req, res) => {
+            console.log(req)
+            const cursor = toyCollection.find();
+            const result = await cursor.toArray()
+            res.send(result)
+        })
+
+        app.get('/allToys/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(req.params.email)
+            const result = await toyCollection.find({ sellerEmail: email }).toArray();
+
+            res.send(result)
         })
 
         // Send a ping to confirm a successful connection
