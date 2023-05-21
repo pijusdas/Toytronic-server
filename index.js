@@ -32,9 +32,6 @@ async function run() {
         const toyCollection = client.db('toytronics').collection('toys');
 
 
-
-
-
         const indexKeys = { name: 1, category: 1 };
         const indexOptions = { searchName: 'toy' }
 
@@ -70,15 +67,15 @@ async function run() {
             res.send(result)
         })
 
-        // app.get('/allToys/:email', async (req, res) => {
-        //     const email = req.params.email;
-        //     console.log(req.params.email)
-        //     const result = await toyCollection.find({ sellerEmail: email }).toArray();
+        app.get('/allToys/:email', async (req, res) => {
+            const email = req.params.email;
+            console.log(req.params.email)
+            const result = await toyCollection.find({ sellerEmail: email }).toArray();
 
-        //     res.send(result)
-        // })
+            res.send(result)
+        })
 
-        app.get('/allToy/:email', async (req, res) => {
+        app.get('/allToys/:email', async (req, res) => {
             const email = req.params.email;
             console.log(req.params.email)
             const result = await toyCollection.find({ sellerEmail: email }).sort({"price": 1}).toArray();
@@ -124,7 +121,7 @@ async function run() {
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
-        // await client.close();
+        
     }
 }
 run().catch(console.dir);
