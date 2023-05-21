@@ -70,10 +70,18 @@ async function run() {
             res.send(result)
         })
 
-        app.get('/allToys/:email', async (req, res) => {
+        // app.get('/allToys/:email', async (req, res) => {
+        //     const email = req.params.email;
+        //     console.log(req.params.email)
+        //     const result = await toyCollection.find({ sellerEmail: email }).toArray();
+
+        //     res.send(result)
+        // })
+
+        app.get('/allToy/:email', async (req, res) => {
             const email = req.params.email;
             console.log(req.params.email)
-            const result = await toyCollection.find({ sellerEmail: email }).toArray();
+            const result = await toyCollection.find({ sellerEmail: email }).sort({"price": 1}).toArray();
 
             res.send(result)
         })
