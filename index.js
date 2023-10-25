@@ -9,9 +9,9 @@ const corsConfig = {
     origin: "*",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE']
-    }
-    app.use(cors(corsConfig))
-    app.options("", cors(corsConfig))
+}
+app.use(cors(corsConfig))
+app.options("", cors(corsConfig))
 app.use(express.json())
 
 //
@@ -22,13 +22,13 @@ const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zwideqp.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
-// const client = new MongoClient(uri, {
-//     serverApi: {
-//         version: ServerApiVersion.v1,
-//         strict: true,
-//         deprecationErrors: true,
-//     }
-// });
+const client = new MongoClient(uri, {
+    serverApi: {
+        version: ServerApiVersion.v1,
+        strict: true,
+        deprecationErrors: true,
+    }
+});
 
 async function run() {
     try {
@@ -83,7 +83,7 @@ async function run() {
         app.get('/allToys/:email', async (req, res) => {
             const email = req.params.email;
             console.log(req.params.email)
-            const result = await toyCollection.find({ sellerEmail: email }).sort({"price": 1}).toArray();
+            const result = await toyCollection.find({ sellerEmail: email }).sort({ "price": 1 }).toArray();
 
             res.send(result)
         })
@@ -122,11 +122,11 @@ async function run() {
             res.send(result)
         })
         // Send a ping to confirm a successful connection
-         client.db("admin").command({ ping: 1 });
+        client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
-        
+
     }
 }
 run().catch(console.dir);
